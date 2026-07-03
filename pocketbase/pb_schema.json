@@ -1,0 +1,181 @@
+[
+  {
+    "id": "eb20bf44000fb9b",
+    "name": "users",
+    "type": "auth",
+    "system": false,
+    "listRule": "id = @request.auth.id || @request.auth.role = \"admin\"",
+    "viewRule": "id = @request.auth.id || @request.auth.role = \"admin\"",
+    "createRule": "",
+    "updateRule": "(id = @request.auth.id && @request.body.role:isset = false) || @request.auth.role = \"admin\"",
+    "deleteRule": "@request.auth.role = \"admin\"",
+    "options": {
+      "allowEmailAuth": true,
+      "allowOAuth2Auth": true,
+      "allowUsernameAuth": true,
+      "exceptEmailDomains": null,
+      "manageRule": null,
+      "minPasswordLength": 8,
+      "onlyEmailDomains": null,
+      "requireEmail": true
+    },
+    "schema": [
+      {
+        "id": "232d9fff7a87836",
+        "name": "name",
+        "type": "text",
+        "required": true,
+        "presentable": true,
+        "unique": false,
+        "options": { "min": 1, "max": 120, "pattern": "" }
+      },
+      {
+        "id": "8e6419cb271476e",
+        "name": "role",
+        "type": "select",
+        "required": true,
+        "presentable": true,
+        "unique": false,
+        "options": {
+          "maxSelect": 1,
+          "values": ["admin", "operator", "customer"]
+        }
+      }
+    ],
+    "indexes": []
+  },
+  {
+    "id": "0762bf3b80559f5",
+    "name": "vehicles",
+    "type": "base",
+    "system": false,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "updateRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "deleteRule": "@request.auth.role = \"admin\"",
+    "options": {},
+    "schema": [
+      { "id": "d110780d3693aa1", "name": "plate_number", "type": "text", "required": true, "presentable": true, "unique": true, "options": { "min": 3, "max": 20, "pattern": "" } },
+      { "id": "3e21a9f0e1cda43", "name": "make", "type": "text", "required": true, "presentable": true, "unique": false, "options": { "min": 1, "max": 60, "pattern": "" } },
+      { "id": "38df7b1dee448fd", "name": "model", "type": "text", "required": true, "presentable": true, "unique": false, "options": { "min": 1, "max": 60, "pattern": "" } },
+      { "id": "74ddd8287afcf5f", "name": "year", "type": "number", "required": true, "presentable": false, "unique": false, "options": { "min": 1900, "max": null, "noDecimal": true } },
+      { "id": "9ca32318b13b127", "name": "color", "type": "text", "required": false, "presentable": false, "unique": false, "options": { "min": null, "max": 40, "pattern": "" } },
+      { "id": "412ec5d34b48ead", "name": "vin", "type": "text", "required": false, "presentable": false, "unique": true, "options": { "min": null, "max": 32, "pattern": "" } },
+      { "id": "eaba369ce3a1434", "name": "fuel_type", "type": "select", "required": true, "presentable": false, "unique": false, "options": { "maxSelect": 1, "values": ["petrol", "diesel", "electric", "hybrid"] } },
+      { "id": "27bcbe34aae2fd0", "name": "gearbox", "type": "select", "required": true, "presentable": false, "unique": false, "options": { "maxSelect": 1, "values": ["manual", "automatic"] } },
+      { "id": "d3db8f7befb384c", "name": "daily_rate", "type": "number", "required": true, "presentable": true, "unique": false, "options": { "min": 0.01, "max": null, "noDecimal": false } },
+      { "id": "1324a1d9d074d5a", "name": "mileage", "type": "number", "required": true, "presentable": false, "unique": false, "options": { "min": 0, "max": null, "noDecimal": true } },
+      { "id": "d8335b3374eb995", "name": "status", "type": "select", "required": true, "presentable": true, "unique": false, "options": { "maxSelect": 1, "values": ["available", "rented", "maintenance", "out_of_service"] } },
+      { "id": "e06c06e67911b78", "name": "location", "type": "text", "required": true, "presentable": false, "unique": false, "options": { "min": 1, "max": 120, "pattern": "" } },
+      { "id": "2a4e41fe8a2ed99", "name": "images", "type": "file", "required": false, "presentable": false, "unique": false, "options": { "maxSelect": 10, "maxSize": 5242880, "mimeTypes": ["image/png", "image/jpeg", "image/webp"], "thumbs": ["100x100", "400x300"], "protected": false } },
+      { "id": "926e1acf57c3257", "name": "telemetry", "type": "json", "required": false, "presentable": false, "unique": false, "options": { "maxSize": 200000 } }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_veh_plate` ON `vehicles` (`plate_number`)"
+    ]
+  },
+  {
+    "id": "cdd304590266fd1",
+    "name": "customers",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\" || user = @request.auth.id",
+    "viewRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\" || user = @request.auth.id",
+    "createRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "updateRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\" || user = @request.auth.id",
+    "deleteRule": "@request.auth.role = \"admin\"",
+    "options": {},
+    "schema": [
+      { "id": "2d1aacddc45b7d3", "name": "user", "type": "relation", "required": false, "presentable": false, "unique": false, "options": { "collectionId": "eb20bf44000fb9b", "cascadeDelete": false, "minSelect": null, "maxSelect": 1, "displayFields": ["name", "email"] } },
+      { "id": "1de2aaf2e5f8f47", "name": "first_name", "type": "text", "required": true, "presentable": true, "unique": false, "options": { "min": 1, "max": 60, "pattern": "" } },
+      { "id": "c16a71df40adc4d", "name": "last_name", "type": "text", "required": true, "presentable": true, "unique": false, "options": { "min": 1, "max": 60, "pattern": "" } },
+      { "id": "073e95137468e96", "name": "email", "type": "email", "required": true, "presentable": true, "unique": true, "options": { "exceptDomains": null, "onlyDomains": null } },
+      { "id": "b8a601dfc0c4f6a", "name": "phone", "type": "text", "required": true, "presentable": false, "unique": false, "options": { "min": 5, "max": 30, "pattern": "" } },
+      { "id": "5e5bcd0f615525b", "name": "license_number", "type": "text", "required": true, "presentable": false, "unique": false, "options": { "min": 1, "max": 60, "pattern": "" } },
+      { "id": "21dc43b75495d65", "name": "license_expiry", "type": "date", "required": true, "presentable": false, "unique": false, "options": { "min": "", "max": "" } },
+      { "id": "0c27e6aad61c624", "name": "status", "type": "select", "required": true, "presentable": true, "unique": false, "options": { "maxSelect": 1, "values": ["active", "blacklisted"] } },
+      { "id": "23f782b2b10eef0", "name": "kyc_verified", "type": "bool", "required": false, "presentable": false, "unique": false, "options": {} },
+      { "id": "927f9b05384d86f", "name": "notes", "type": "text", "required": false, "presentable": false, "unique": false, "options": { "min": null, "max": 2000, "pattern": "" } },
+      { "id": "bd202dcdb0433ac", "name": "license_photo", "type": "file", "required": false, "presentable": false, "unique": false, "options": { "maxSelect": 1, "maxSize": 5242880, "mimeTypes": ["image/png", "image/jpeg"], "thumbs": [], "protected": true } },
+      { "id": "dec1486af5a9fff", "name": "selfie_photo", "type": "file", "required": false, "presentable": false, "unique": false, "options": { "maxSelect": 1, "maxSize": 5242880, "mimeTypes": ["image/png", "image/jpeg"], "thumbs": [], "protected": true } }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_cus_email` ON `customers` (`email`)"
+    ]
+  },
+  {
+    "id": "99ecffaf74057c2",
+    "name": "bookings",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\" || customer.user = @request.auth.id",
+    "viewRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\" || customer.user = @request.auth.id",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\" || customer.user = @request.auth.id",
+    "deleteRule": "@request.auth.role = \"admin\"",
+    "options": {},
+    "schema": [
+      { "id": "77e3a65d3d7bf59", "name": "vehicle", "type": "relation", "required": true, "presentable": true, "unique": false, "options": { "collectionId": "0762bf3b80559f5", "cascadeDelete": false, "minSelect": 1, "maxSelect": 1, "displayFields": ["plate_number", "make", "model"] } },
+      { "id": "2b5fd29bbe33f22", "name": "customer", "type": "relation", "required": true, "presentable": true, "unique": false, "options": { "collectionId": "cdd304590266fd1", "cascadeDelete": false, "minSelect": 1, "maxSelect": 1, "displayFields": ["first_name", "last_name"] } },
+      { "id": "6bab80d04638f9a", "name": "status", "type": "select", "required": true, "presentable": true, "unique": false, "options": { "maxSelect": 1, "values": ["draft", "confirmed", "active", "completed", "cancelled"] } },
+      { "id": "ee0a3a9df5808a9", "name": "pickup_datetime", "type": "date", "required": true, "presentable": true, "unique": false, "options": { "min": "", "max": "" } },
+      { "id": "41ccf531ef33186", "name": "return_datetime", "type": "date", "required": true, "presentable": true, "unique": false, "options": { "min": "", "max": "" } },
+      { "id": "de3f8cc9a9ece86", "name": "pickup_mileage", "type": "number", "required": false, "presentable": false, "unique": false, "options": { "min": 0, "max": null, "noDecimal": true } },
+      { "id": "f14b84af2db62f7", "name": "return_mileage", "type": "number", "required": false, "presentable": false, "unique": false, "options": { "min": 0, "max": null, "noDecimal": true } },
+      { "id": "7eba4f3ec2d4821", "name": "pickup_fuel_level", "type": "number", "required": false, "presentable": false, "unique": false, "options": { "min": 0, "max": 100, "noDecimal": false } },
+      { "id": "09d19cb8614daad", "name": "return_fuel_level", "type": "number", "required": false, "presentable": false, "unique": false, "options": { "min": 0, "max": 100, "noDecimal": false } },
+      { "id": "5365298344f9cba", "name": "total_price", "type": "number", "required": true, "presentable": true, "unique": false, "options": { "min": 0, "max": null, "noDecimal": false } },
+      { "id": "6d967a0e802e1d3", "name": "stripe_payment_intent", "type": "text", "required": false, "presentable": false, "unique": false, "options": { "min": null, "max": 120, "pattern": "" } },
+      { "id": "9f955f391dc9aa9", "name": "signature", "type": "file", "required": false, "presentable": false, "unique": false, "options": { "maxSelect": 1, "maxSize": 2097152, "mimeTypes": ["image/png", "image/jpeg", "image/svg+xml"], "thumbs": [], "protected": false } }
+    ],
+    "indexes": [
+      "CREATE INDEX `idx_bok_vehicle_dates` ON `bookings` (`vehicle`, `pickup_datetime`, `return_datetime`)"
+    ]
+  },
+  {
+    "id": "5800f6851b4ff21",
+    "name": "damages",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "viewRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "createRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "updateRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "deleteRule": "@request.auth.role = \"admin\"",
+    "options": {},
+    "schema": [
+      { "id": "de83a0d81f96bc4", "name": "vehicle", "type": "relation", "required": true, "presentable": true, "unique": false, "options": { "collectionId": "0762bf3b80559f5", "cascadeDelete": true, "minSelect": 1, "maxSelect": 1, "displayFields": ["plate_number"] } },
+      { "id": "d2ec9e8946ceb08", "name": "booking", "type": "relation", "required": false, "presentable": false, "unique": false, "options": { "collectionId": "99ecffaf74057c2", "cascadeDelete": false, "minSelect": null, "maxSelect": 1, "displayFields": null } },
+      { "id": "ddbacefb3702dcf", "name": "part", "type": "text", "required": true, "presentable": true, "unique": false, "options": { "min": 1, "max": 60, "pattern": "" } },
+      { "id": "159f67d43262367", "name": "severity", "type": "select", "required": true, "presentable": true, "unique": false, "options": { "maxSelect": 1, "values": ["light", "moderate", "severe"] } },
+      { "id": "c48e57ed5e8ce8b", "name": "description", "type": "text", "required": true, "presentable": false, "unique": false, "options": { "min": 1, "max": 2000, "pattern": "" } },
+      { "id": "d8f8cdd82f93bda", "name": "photos", "type": "file", "required": false, "presentable": false, "unique": false, "options": { "maxSelect": 5, "maxSize": 5242880, "mimeTypes": ["image/png", "image/jpeg", "image/webp"], "thumbs": ["200x200"], "protected": false } },
+      { "id": "91fe4fc1677717f", "name": "resolved", "type": "bool", "required": false, "presentable": true, "unique": false, "options": {} },
+      { "id": "26cde6b8575fcaa", "name": "x_percent", "type": "number", "required": true, "presentable": false, "unique": false, "options": { "min": 0, "max": 100, "noDecimal": false } },
+      { "id": "3175135e2debe75", "name": "y_percent", "type": "number", "required": true, "presentable": false, "unique": false, "options": { "min": 0, "max": 100, "noDecimal": false } }
+    ],
+    "indexes": []
+  },
+  {
+    "id": "b2ab818effe3363",
+    "name": "expenses",
+    "type": "base",
+    "system": false,
+    "listRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "viewRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "createRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "updateRule": "@request.auth.role = \"admin\" || @request.auth.role = \"operator\"",
+    "deleteRule": "@request.auth.role = \"admin\"",
+    "options": {},
+    "schema": [
+      { "id": "f07ce0460e4a287", "name": "vehicle", "type": "relation", "required": true, "presentable": true, "unique": false, "options": { "collectionId": "0762bf3b80559f5", "cascadeDelete": true, "minSelect": 1, "maxSelect": 1, "displayFields": ["plate_number"] } },
+      { "id": "ed7cb8da4d1b188", "name": "type", "type": "select", "required": true, "presentable": true, "unique": false, "options": { "maxSelect": 1, "values": ["fuel", "maintenance", "insurance", "cleaning", "toll", "other"] } },
+      { "id": "eb70789ce27af97", "name": "amount", "type": "number", "required": true, "presentable": true, "unique": false, "options": { "min": 0, "max": null, "noDecimal": false } },
+      { "id": "f5f590caea5f0a7", "name": "date", "type": "date", "required": true, "presentable": true, "unique": false, "options": { "min": "", "max": "" } },
+      { "id": "59d734cf2d75533", "name": "description", "type": "text", "required": false, "presentable": false, "unique": false, "options": { "min": null, "max": 2000, "pattern": "" } },
+      { "id": "65032098d089f61", "name": "receipt", "type": "file", "required": false, "presentable": false, "unique": false, "options": { "maxSelect": 1, "maxSize": 5242880, "mimeTypes": ["image/png", "image/jpeg", "application/pdf"], "thumbs": [], "protected": false } }
+    ],
+    "indexes": []
+  }
+]
