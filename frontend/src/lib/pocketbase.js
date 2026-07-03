@@ -22,7 +22,7 @@ export function fileUrl(record, filename, thumb) {
 }
 
 export function currentUser() {
-  return pb().authStore.record;
+  return pb().authStore.model;
 }
 
 export function isLoggedIn() {

@@ -175,6 +175,17 @@ onBootstrap((e) => {
       collection.fields.add(new Field(fieldConfig));
     }
 
+    // "base" collections don't get created/updated fields automatically --
+    // add them so `sort: "-created"` works the way every list page expects.
+    if (def.type === "base") {
+      if (!existingFieldNames.includes("created")) {
+        collection.fields.add(new Field({ name: "created", type: "autodate", onCreate: true, onUpdate: false }));
+      }
+      if (!existingFieldNames.includes("updated")) {
+        collection.fields.add(new Field({ name: "updated", type: "autodate", onCreate: true, onUpdate: true }));
+      }
+    }
+
     collection.listRule = def.listRule;
     collection.viewRule = def.viewRule;
     collection.createRule = def.createRule;

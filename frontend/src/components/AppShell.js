@@ -27,8 +27,8 @@ export default function AppShell({ children }) {
   const isAdminSection = pathname?.startsWith("/admin");
 
   useEffect(() => {
-    setUser(pb().authStore.record);
-    return pb().authStore.onChange(() => setUser(pb().authStore.record));
+    setUser(pb().authStore.model);
+    return pb().authStore.onChange(() => setUser(pb().authStore.model));
   }, []);
 
   const isStaff = user && (user.role === "admin" || user.role === "operator");

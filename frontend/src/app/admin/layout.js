@@ -10,8 +10,8 @@ export default function AdminLayout({ children }) {
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
-    setUser(pb().authStore.record);
-    return pb().authStore.onChange(() => setUser(pb().authStore.record));
+    setUser(pb().authStore.model);
+    return pb().authStore.onChange(() => setUser(pb().authStore.model));
   }, []);
 
   useEffect(() => {

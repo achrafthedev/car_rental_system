@@ -30,8 +30,8 @@ export default function CustomerKeyPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setUser(pb().authStore.record);
-    const unsub = pb().authStore.onChange(() => setUser(pb().authStore.record));
+    setUser(pb().authStore.model);
+    const unsub = pb().authStore.onChange(() => setUser(pb().authStore.model));
     return unsub;
   }, []);
 
