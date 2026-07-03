@@ -1,5 +1,7 @@
 "use client";
 
+const LOCATIONS = ["Downtown Depot", "Airport Terminal", "Uptown Garage", "Harbor Point"];
+
 export default function SearchWidget({ value, onChange, onSubmit }) {
   return (
     <form
@@ -7,9 +9,9 @@ export default function SearchWidget({ value, onChange, onSubmit }) {
         e.preventDefault();
         onSubmit?.();
       }}
-      className="glass-card p-4 grid grid-cols-1 md:grid-cols-5 gap-3 items-end"
+      className="glass-card p-4 grid grid-cols-1 md:grid-cols-6 gap-3 items-end"
     >
-      <div className="md:col-span-2">
+      <div>
         <label className="label">Pickup location</label>
         <select
           className="input"
@@ -17,10 +19,22 @@ export default function SearchWidget({ value, onChange, onSubmit }) {
           onChange={(e) => onChange({ ...value, location: e.target.value })}
         >
           <option value="">Any location</option>
-          <option>Downtown Depot</option>
-          <option>Airport Terminal</option>
-          <option>Uptown Garage</option>
-          <option>Harbor Point</option>
+          {LOCATIONS.map((loc) => (
+            <option key={loc}>{loc}</option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="label">Dropoff location</label>
+        <select
+          className="input"
+          value={value.dropoffLocation ?? value.location}
+          onChange={(e) => onChange({ ...value, dropoffLocation: e.target.value })}
+        >
+          <option value="">Same as pickup</option>
+          {LOCATIONS.map((loc) => (
+            <option key={loc}>{loc}</option>
+          ))}
         </select>
       </div>
       <div>
@@ -43,7 +57,7 @@ export default function SearchWidget({ value, onChange, onSubmit }) {
           required
         />
       </div>
-      <button type="submit" className="btn-primary w-full">
+      <button type="submit" className="btn-primary w-full md:col-span-2">
         Search Fleet
       </button>
     </form>

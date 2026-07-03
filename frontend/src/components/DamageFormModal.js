@@ -10,7 +10,7 @@ const PARTS = [
   "front_left_fender", "front_right_fender", "left_mirror", "right_mirror",
 ];
 
-export default function DamageFormModal({ vehicleId, bookingId, x, y, onClose, onSaved }) {
+export default function DamageFormModal({ vehicleId, bookingId, view, x, y, onClose, onSaved }) {
   const [part, setPart] = useState(PARTS[0]);
   const [severity, setSeverity] = useState("light");
   const [description, setDescription] = useState("");
@@ -46,6 +46,7 @@ export default function DamageFormModal({ vehicleId, bookingId, x, y, onClose, o
         vehicle: vehicleId,
         booking: bookingId || undefined,
         part,
+        view,
         severity,
         description,
         photos: photos ? Array.from(photos) : undefined,
@@ -62,7 +63,7 @@ export default function DamageFormModal({ vehicleId, bookingId, x, y, onClose, o
   }
 
   return (
-    <Modal open onClose={onClose} title="Log Damage">
+    <Modal open onClose={onClose} title={`Log Damage · ${view} view`}>
       <div className="flex flex-col gap-3">
         <div>
           <label className="label">Part</label>

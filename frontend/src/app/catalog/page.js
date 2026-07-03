@@ -13,7 +13,7 @@ function defaultDates() {
   const pickup = new Date(Date.now() + 24 * 3600 * 1000);
   const ret = new Date(Date.now() + 3 * 24 * 3600 * 1000);
   const fmt = (d) => d.toISOString().slice(0, 16);
-  return { location: "", pickup: fmt(pickup), ret: fmt(ret) };
+  return { location: "", dropoffLocation: "", pickup: fmt(pickup), ret: fmt(ret) };
 }
 
 export default function CatalogPage() {

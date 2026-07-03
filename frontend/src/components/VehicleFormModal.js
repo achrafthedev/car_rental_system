@@ -15,6 +15,9 @@ const BLANK = {
   gearbox: "automatic",
   daily_rate: 50,
   mileage: 0,
+  doors: 4,
+  passengers: 5,
+  rating: 5,
   status: "available",
   location: "Downtown Depot",
 };
@@ -87,6 +90,15 @@ export default function VehicleFormModal({ vehicle, onClose, onSaved }) {
         </Field>
         <Field label="Mileage">
           <input type="number" className="input" value={form.mileage} onChange={(e) => set("mileage", Number(e.target.value))} />
+        </Field>
+        <Field label="Doors">
+          <input type="number" min={2} max={6} className="input" value={form.doors} onChange={(e) => set("doors", Number(e.target.value))} />
+        </Field>
+        <Field label="Passengers">
+          <input type="number" min={1} max={15} className="input" value={form.passengers} onChange={(e) => set("passengers", Number(e.target.value))} />
+        </Field>
+        <Field label="Rating (0-5)">
+          <input type="number" min={0} max={5} step={0.1} className="input" value={form.rating} onChange={(e) => set("rating", Number(e.target.value))} />
         </Field>
         <Field label="Status">
           <select className="input" value={form.status} onChange={(e) => set("status", e.target.value)}>

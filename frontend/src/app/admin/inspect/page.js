@@ -6,9 +6,12 @@ import CarWireframe from "@/components/CarWireframe";
 import DamageFormModal from "@/components/DamageFormModal";
 import DamageDetailModal from "@/components/DamageDetailModal";
 
+const VIEWS = ["top", "side", "front", "back"];
+
 export default function InspectPage() {
   const [vehicles, setVehicles] = useState([]);
   const [vehicleId, setVehicleId] = useState("");
+  const [view, setView] = useState("top");
   const [damages, setDamages] = useState([]);
   const [tapPoint, setTapPoint] = useState(null);
   const [selectedDamage, setSelectedDamage] = useState(null);
@@ -42,7 +45,7 @@ export default function InspectPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold">Smart Inspection Terminal</h1>
-        <p className="text-text-secondary text-sm">Tap the diagram to log a new damage point.</p>
+        <p className="text-text-secondary text-sm">Pick a view, then tap the diagram to log a new damage point.</p>
       </div>
 
       <div className="glass-card p-4 flex flex-wrap items-center gap-3">
@@ -60,13 +63,27 @@ export default function InspectPage() {
       {!loading && vehicle && (
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
           <div className="glass-card p-6">
+            <div className="flex rounded-xl overflow-hidden border border-white/10 mb-4">
+              {VIEWS.map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  className={`flex-1 py-1.5 text-xs capitalize ${
+                    view === v ? "bg-primary text-black" : "bg-white/5 text-text-secondary"
+                  }`}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
             <CarWireframe
+              view={view}
               damages={damages}
               onTap={(x, y) => setTapPoint({ x, y })}
               onSelectDamage={setSelectedDamage}
             />
             <p className="text-xs text-text-secondary text-center mt-3">
-              Top-down view · glowing dots mark reported damage
+              {view} view · glowing dots mark reported damage on this view
             </p>
           </div>
 
@@ -83,9 +100,12 @@ export default function InspectPage() {
                     <p className="text-sm font-medium capitalize">{d.part.replaceAll("_", " ")}</p>
                     <p className="text-xs text-text-secondary line-clamp-1">{d.description}</p>
                   </div>
-                  <span className={`badge ${d.resolved ? "bg-primary/15 text-primary" : "bg-danger/15 text-danger"}`}>
-                    {d.resolved ? "resolved" : d.severity}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="badge bg-white/10 capitalize">{d.view || "top"}</span>
+                    <span className={`badge ${d.resolved ? "bg-primary/15 text-primary" : "bg-danger/15 text-danger"}`}>
+                      {d.resolved ? "resolved" : d.severity}
+                    </span>
+                  </div>
                 </button>
               ))}
               {damages.length === 0 && (
@@ -99,6 +119,7 @@ export default function InspectPage() {
       {tapPoint && (
         <DamageFormModal
           vehicleId={vehicleId}
+          view={view}
           x={tapPoint.x}
           y={tapPoint.y}
           onClose={() => setTapPoint(null)}

@@ -89,6 +89,7 @@ export default function AdminDashboard() {
       {selectedBooking && (
         <BookingActionModal
           booking={selectedBooking}
+          vehicles={vehicles}
           onClose={() => setSelectedBooking(null)}
           onUpdated={() => {
             setSelectedBooking(null);

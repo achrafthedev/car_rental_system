@@ -27,9 +27,19 @@ export default function VehicleCard({ vehicle, estimate, onBook }) {
           <span className="badge bg-primary/15 text-primary">{vehicle.status}</span>
         </div>
 
+        {vehicle.rating > 0 && (
+          <p className="text-xs text-amber-400">
+            {"★".repeat(Math.round(vehicle.rating))}
+            {"☆".repeat(5 - Math.round(vehicle.rating))}
+            <span className="text-text-secondary ml-1">{vehicle.rating.toFixed(1)}</span>
+          </p>
+        )}
+
         <div className="flex flex-wrap gap-2 text-xs text-text-secondary">
           <span className="badge bg-white/5">{vehicle.gearbox}</span>
           <span className="badge bg-white/5">{vehicle.fuel_type}</span>
+          {vehicle.doors > 0 && <span className="badge bg-white/5">{vehicle.doors} doors</span>}
+          {vehicle.passengers > 0 && <span className="badge bg-white/5">{vehicle.passengers} seats</span>}
           <span className="badge bg-white/5">{vehicle.mileage?.toLocaleString()} mi</span>
         </div>
 
